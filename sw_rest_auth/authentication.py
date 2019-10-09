@@ -1,9 +1,14 @@
 # coding: utf-8
-from django.contrib.auth.models import User
+import logging
+
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 import requests
+
+logger = logging.getLogger('sw.rest.auth')
+User = get_user_model()
 
 
 class TokenServiceAuthentication(BaseAuthentication):
@@ -39,19 +44,15 @@ class TokenServiceAuthentication(BaseAuthentication):
 
     @staticmethod
     def _check_token(token_key):
-        url = settings.AUTH_SERVICE_CHECK_TOKEN_URL
-        auth_token = settings.AUTH_TOKEN
-        auth_verified_ssl_crt = getattr(settings, 'AUTH_VERIFIED_SSL_CRT_PATH', None)
-
-        headers = {'Authorization': 'Token %s' % auth_token}
-        data = {'token': token_key}
         try:
-            kwargs = {
-                'headers': headers,
-                'data': data,
+            params = {
+                'headers': {'Authorization': 'Token %s' % settings.AUTH_TOKEN},
+                'data': {'token': token_key},
+                'verify': getattr(settings, 'AUTH_VERIFIED_SSL_CRT_PATH', None),
+                'timeout': 5
             }
-            kwargs['verify'] = auth_verified_ssl_crt
-            r = requests.post(url, **kwargs)
+            logger.debug('---> Request: %s params: %s', settings.AUTH_SERVICE_CHECK_TOKEN_URL, params)
+            r = requests.post(settings.AUTH_SERVICE_CHECK_TOKEN_URL, **params)
         except requests.ConnectionError:
             raise exceptions.AuthenticationFailed('Invalid token header. ConnectionError.')
 
@@ -62,14 +63,19 @@ class TokenServiceAuthentication(BaseAuthentication):
                 user = User.objects.get(username=username)
             except User.DoesNotExist:
                 user = User(username=username)
+            logger.debug('<--- Response url: %s resp: %s', settings.AUTH_SERVICE_CHECK_TOKEN_URL, result)
             return user, None
 
         elif r.status_code == 400:
             result = r.json()
             token_err_description = ', '.join(result['token'])
+            logger.error('<--- Response  auth failed url: %s error: %s',
+                         settings.AUTH_SERVICE_CHECK_TOKEN_URL, result, exc_info=True)
             raise exceptions.AuthenticationFailed('Invalid token header. %s' % token_err_description)
 
         else:
+            logger.error('<--- Response auth failed url: %s error: %s',
+                         settings.AUTH_SERVICE_CHECK_TOKEN_URL, r.text, exc_info=True)
             raise exceptions.AuthenticationFailed('Invalid token header. Unknown error: %s' % r.text)
 
     def authenticate_header(self, request):

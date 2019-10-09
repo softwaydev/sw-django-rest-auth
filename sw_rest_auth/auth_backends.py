@@ -1,7 +1,14 @@
 # coding: utf-8
+import logging
+
 import requests
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+from .permissions import CodePermission
+
+User = get_user_model()
+logger = logging.getLogger('sw.rest.auth')
 
 
 class RestBackend(object):
@@ -13,13 +20,11 @@ class RestBackend(object):
         headers = {'Authorization': 'Token %s' % auth_token}
         data = {'username': username, 'password': password}
         try:
-            kwargs = {
-                'headers': headers,
-                'data': data,
-            }
-            kwargs['verify'] = auth_verified_ssl_crt
+            kwargs = {'headers': headers, 'data': data, 'verify': auth_verified_ssl_crt, 'timeout': 5}
+            logger.debug('---> Request: %s params: %s', url, kwargs)
             r = requests.post(url, **kwargs)
         except requests.ConnectionError:
+            logger.error('<--- Response  auth failed url: %s', url, exc_info=True)
             return None
 
         if r.status_code == 200:
@@ -32,16 +37,18 @@ class RestBackend(object):
             except User.DoesNotExist:
                 result['password'] = password
                 user = User.objects.create_user(**result)
+            logger.debug('<--- Response url: %s resp: %s', url, result)
             return user
 
+        logger.error('<--- Response auth failed url: %s error: %s', url, r.text)
         return None
 
     def get_user(self, user_id):
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
+            logger.error('User does not exists user_id: %s', user_id)
             return None
 
     def has_perm(self, user, perm, obj):
-        from .permissions import CodePermission
         return CodePermission.has_permission_by_params(user.username, perm, raise_exception=False)

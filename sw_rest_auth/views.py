@@ -1,11 +1,15 @@
 # coding: utf-8
 import logging
+
+from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 import rest_framework.authtoken.views
 from . import serializers
 
+
+AuthUser = get_user_model()
 logger = logging.getLogger('sw.rest.auth')
 
 
@@ -62,9 +66,8 @@ def check_login_password(request):
     serializer.is_valid(raise_exception=True)
     username = serializer.validated_data['username']
     logger.debug('Username and password correct', extra={'username': username})
-    user_serializer = serializers.User(instance=serializers.AuthUser.objects.get(username=username))
+    user_serializer = serializers.User(instance=AuthUser.objects.get(username=username))
     return Response(user_serializer.data)
-
 
 
 @api_view(['GET'])
