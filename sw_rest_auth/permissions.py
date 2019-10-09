@@ -17,7 +17,7 @@ class CodePermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if not (request.user and request.user.username):
-            logger.debug('Unauthorized')
+            logger.error('Unauthorized')
             return False
 
         return self.has_permission_by_params(
@@ -34,7 +34,7 @@ class CodePermission(permissions.BasePermission):
                 'auth_verified_ssl_crt': getattr(settings, 'AUTH_VERIFIED_SSL_CRT_PATH', None),
                 'timeout': getattr(settings, 'REQUEST_TIMEOUT', 5)
             }
-            logger.debug('---> Request: %s params: %s', settings.AUTH_SERVICE_CHECK_PERM_URL, params)
+            logger.info('---> Request: %s method: GET params: %s', settings.AUTH_SERVICE_CHECK_PERM_URL, params)
             r = requests.get(settings.AUTH_SERVICE_CHECK_PERM_URL, **params)
         except requests.ConnectionError as e:
             logger.error('Permission denied %s', e, exc_info=True)
@@ -52,7 +52,7 @@ class CodePermission(permissions.BasePermission):
             else:
                 return False
 
-        logger.debug('<--- Response url: %s resp: %s', settings.AUTH_SERVICE_CHECK_PERM_URL, r.text)
+        logger.info('<--- Response url: %s resp: %s', settings.AUTH_SERVICE_CHECK_PERM_URL, r.text)
         return True
 
     @classmethod

@@ -21,7 +21,7 @@ class RestBackend(object):
         data = {'username': username, 'password': password}
         try:
             kwargs = {'headers': headers, 'data': data, 'verify': auth_verified_ssl_crt, 'timeout': 5}
-            logger.debug('---> Request: %s params: %s', url, kwargs)
+            logger.info('---> Request: %s method: POST', url)
             r = requests.post(url, **kwargs)
         except requests.ConnectionError:
             logger.error('<--- Response  auth failed url: %s', url, exc_info=True)
@@ -37,7 +37,7 @@ class RestBackend(object):
             except User.DoesNotExist:
                 result['password'] = password
                 user = User.objects.create_user(**result)
-            logger.debug('<--- Response url: %s resp: %s', url, result)
+            logger.info('<--- Response url: %s resp: %s', url, result)
             return user
 
         logger.error('<--- Response auth failed url: %s error: %s', url, r.text)

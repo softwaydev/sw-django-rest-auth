@@ -51,7 +51,7 @@ class TokenServiceAuthentication(BaseAuthentication):
                 'verify': getattr(settings, 'AUTH_VERIFIED_SSL_CRT_PATH', None),
                 'timeout': 5
             }
-            logger.debug('---> Request: %s params: %s', settings.AUTH_SERVICE_CHECK_TOKEN_URL, params)
+            logger.info('---> Request: %s method: POST', settings.AUTH_SERVICE_CHECK_TOKEN_URL)
             r = requests.post(settings.AUTH_SERVICE_CHECK_TOKEN_URL, **params)
         except requests.ConnectionError:
             raise exceptions.AuthenticationFailed('Invalid token header. ConnectionError.')
@@ -63,7 +63,7 @@ class TokenServiceAuthentication(BaseAuthentication):
                 user = User.objects.get(username=username)
             except User.DoesNotExist:
                 user = User(username=username)
-            logger.debug('<--- Response url: %s resp: %s', settings.AUTH_SERVICE_CHECK_TOKEN_URL, result)
+            logger.info('<--- Response url: %s resp: %s', settings.AUTH_SERVICE_CHECK_TOKEN_URL, result)
             return user, None
 
         elif r.status_code == 400:
