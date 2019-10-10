@@ -31,7 +31,7 @@ class CodePermission(permissions.BasePermission):
             params = {
                 'headers': {'Authorization': 'Token %s' % settings.AUTH_TOKEN},
                 'params': {'user': username, 'perm': permission_code},
-                'auth_verified_ssl_crt': getattr(settings, 'AUTH_VERIFIED_SSL_CRT_PATH', None),
+                'verify': getattr(settings, 'AUTH_VERIFIED_SSL_CRT_PATH', None),
                 'timeout': getattr(settings, 'REQUEST_TIMEOUT', 5)
             }
             logger.info('---> Request: %s method: GET params: %s', settings.AUTH_SERVICE_CHECK_PERM_URL, params)
