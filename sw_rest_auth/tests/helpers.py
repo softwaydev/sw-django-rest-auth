@@ -1,5 +1,8 @@
 # coding: utf-8
-from mock import mock
+try:
+    from unittest import mock
+except:
+    import mock
 
 from django.contrib.auth.models import User
 from django.conf import settings
