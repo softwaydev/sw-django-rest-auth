@@ -31,7 +31,7 @@ class AuthHelperMixin(object):
         if not perm_list and perm:
             perm_list = [perm]
 
-        def side_effect(url, headers, params, verify):
+        def side_effect(url, headers, params, verify, **kwargs):
             response_mock = mock.Mock()
             if params['user'] == user.username and params['perm'] in perm_list:
                 response_mock.status_code = status.HTTP_200_OK
@@ -101,4 +101,3 @@ class AuthTestCaseMixin(AuthHelperMixin):
         if not hasattr(self, 'user') or not self.user:
             self.user = User.objects.create(username='tester')
         return self.user
-
