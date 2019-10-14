@@ -3,11 +3,10 @@ import logging
 
 import requests
 from django.conf import settings
-from django.contrib.auth import get_user_model
 
 from .permissions import CodePermission
 
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 logger = logging.getLogger('sw.rest.auth')
 
 

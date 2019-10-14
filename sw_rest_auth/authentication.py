@@ -2,13 +2,12 @@
 import logging
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 import requests
 
 logger = logging.getLogger('sw.rest.auth')
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 
 class TokenServiceAuthentication(BaseAuthentication):

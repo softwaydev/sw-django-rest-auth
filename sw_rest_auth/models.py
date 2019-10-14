@@ -1,9 +1,9 @@
 # coding: utf-8
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.contrib.auth.models import Group
+from django.conf import settings
 
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 
 class Permission(models.Model):

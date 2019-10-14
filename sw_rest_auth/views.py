@@ -1,7 +1,7 @@
 # coding: utf-8
 import logging
 
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,7 +9,7 @@ import rest_framework.authtoken.views
 from . import serializers
 
 
-AuthUser = get_user_model()
+AuthUser = settings.AUTH_USER_MODEL
 logger = logging.getLogger('sw.rest.auth')
 
 

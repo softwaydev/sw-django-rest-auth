@@ -1,11 +1,12 @@
 # coding: utf-8
-from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from django.conf import settings
+
 from . import models
 
-AuthUser = get_user_model()
+AuthUser = settings.AUTH_USER_MODEL
 
 
 class CheckToken(serializers.Serializer):
