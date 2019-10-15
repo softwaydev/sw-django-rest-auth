@@ -1,12 +1,11 @@
 # coding: utf-8
 from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth import get_user_model
+
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from django.conf import settings
 
 from . import models
-
-AuthUser = settings.AUTH_USER_MODEL
 
 
 class CheckToken(serializers.Serializer):
@@ -25,8 +24,8 @@ class CheckPerm(serializers.Serializer):
 
     def validate_user(self, value):
         try:
-            return AuthUser.objects.get(username=value)
-        except AuthUser.DoesNotExist:
+            return get_user_model().objects.get(username=value)
+        except get_user_model().DoesNotExist:
             raise serializers.ValidationError('User with username "{0}" not found'.format(value))
 
     def validate_perm(self, value):
@@ -75,5 +74,5 @@ class CheckLoginPassword(serializers.Serializer):
 
 class User(serializers.ModelSerializer):
     class Meta:
-        model = AuthUser
+        model = get_user_model()
         exclude = ('password', )

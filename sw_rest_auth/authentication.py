@@ -2,12 +2,12 @@
 import logging
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 import requests
 
 logger = logging.getLogger('sw.rest.auth')
-User = settings.AUTH_USER_MODEL
 
 
 class TokenServiceAuthentication(BaseAuthentication):
@@ -59,9 +59,9 @@ class TokenServiceAuthentication(BaseAuthentication):
             result = r.json()
             username = result['username']
             try:
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
-                user = User(username=username)
+                user = get_user_model().objects.get(username=username)
+            except get_user_model().DoesNotExist:
+                user = get_user_model()(username=username)
             logger.info('<--- Response url: %s resp: %s', settings.AUTH_SERVICE_CHECK_TOKEN_URL, result)
             return user, None
 

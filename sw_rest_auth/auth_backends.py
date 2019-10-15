@@ -2,11 +2,11 @@
 import logging
 
 import requests
+from django.contrib.auth import get_user_model
 from django.conf import settings
 
 from .permissions import CodePermission
 
-User = settings.AUTH_USER_MODEL
 logger = logging.getLogger('sw.rest.auth')
 
 
@@ -32,10 +32,10 @@ class RestBackend(object):
             result.pop('user_permissions')
             result.pop('groups')
             try:
-                user = User.objects.get(username=result['username'])
-            except User.DoesNotExist:
+                user = get_user_model().objects.get(username=result['username'])
+            except get_user_model().DoesNotExist:
                 result['password'] = password
-                user = User.objects.create_user(**result)
+                user = get_user_model().objects.create_user(**result)
             logger.info('<--- Response url: %s resp: %s', url, result)
             return user
 
@@ -44,8 +44,8 @@ class RestBackend(object):
 
     def get_user(self, user_id):
         try:
-            return User.objects.get(pk=user_id)
-        except User.DoesNotExist:
+            return get_user_model().objects.get(pk=user_id)
+        except get_user_model().DoesNotExist:
             logger.error('User does not exists user_id: %s', user_id)
             return None
 
