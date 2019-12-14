@@ -17,7 +17,7 @@ setup(
     license='The MIT License',
     test_suite='runtests.runtests',
     install_requires=[
-        'django==2.2.7',
+        'django>=1.8.7',
         'djangorestframework==3.9.1',
         'requests==2.13.0',
         'mock==2.0.0',
