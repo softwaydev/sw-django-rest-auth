@@ -68,13 +68,13 @@ class TokenServiceAuthentication(BaseAuthentication):
         elif r.status_code == 400:
             result = r.json()
             token_err_description = ', '.join(result['token'])
-            logger.error('<--- Response  auth failed url: %s error: %s',
-                         settings.AUTH_SERVICE_CHECK_TOKEN_URL, result, exc_info=True)
+            logger.error('<--- Response  auth failed url: %s  token: %s error: %s',
+                         settings.AUTH_SERVICE_CHECK_TOKEN_URL, token_key, result, exc_info=True)
             raise exceptions.AuthenticationFailed('Invalid token header. %s' % token_err_description)
 
         else:
-            logger.error('<--- Response auth failed url: %s error: %s',
-                         settings.AUTH_SERVICE_CHECK_TOKEN_URL, r.text, exc_info=True)
+            logger.error('<--- Response auth failed url: %s token_key: %s error: %s',
+                         settings.AUTH_SERVICE_CHECK_TOKEN_URL, token_key, r.text, exc_info=True)
             raise exceptions.AuthenticationFailed('Invalid token header. Unknown error: %s' % r.text)
 
     def authenticate_header(self, request):
