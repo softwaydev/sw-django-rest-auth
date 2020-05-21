@@ -125,4 +125,4 @@ def obtain_auth_token(request):
             type: string
             description: User token for using in request header "Authentication"
     """
-    return rest_framework.authtoken.views.obtain_auth_token(request._request)
+    return rest_framework.authtoken.views.obtain_auth_token(request)
