@@ -11,7 +11,7 @@ logger = logging.getLogger('sw.rest.auth')
 
 
 class RestBackend(object):
-    def authenticate(self, username, password):
+    def authenticate(self, request, username, password):
         url = settings.AUTH_SERVICE_CHECK_LOGIN_PASSWORD_URL
         auth_token = settings.AUTH_TOKEN
         auth_verified_ssl_crt = getattr(settings, 'AUTH_VERIFIED_SSL_CRT_PATH', None)
