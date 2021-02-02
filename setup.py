@@ -19,7 +19,7 @@ setup(
     install_requires=[
         'django>=1.8.7',
         'djangorestframework==3.10.3',
-        'requests==2.13.0',
+        'requests==2.24.0',
         'mock==2.0.0',
     ],
 )
