@@ -4,9 +4,11 @@ try:
 except:
     import mock
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from rest_framework import status
+
+User = get_user_model()
 
 
 class AuthHelperMixin(object):
