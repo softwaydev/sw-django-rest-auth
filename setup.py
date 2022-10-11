@@ -18,8 +18,8 @@ setup(
     test_suite='runtests.runtests',
     install_requires=[
         'django>=1.8.7',
-        'djangorestframework==3.10.3',
-        'requests==2.24.0',
-        'mock==2.0.0',
+        'djangorestframework>=3.10.3',
+        'requests>=2.24.0',
+        'mock>=2.0.0',
     ],
 )
