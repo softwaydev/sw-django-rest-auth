@@ -21,7 +21,7 @@ class CodePermission(permissions.BasePermission):
             return False
 
         return self.has_permission_by_params(
-            username=request.user.username,
+            username=request.user.username.lower(),
             permission_code=self.permission_code
         )
 
