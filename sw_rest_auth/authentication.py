@@ -53,6 +53,7 @@ class TokenServiceAuthentication(BaseAuthentication):
             logger.info('---> Request: %s method: POST', settings.AUTH_SERVICE_CHECK_TOKEN_URL)
             r = requests.post(settings.AUTH_SERVICE_CHECK_TOKEN_URL, **params)
         except requests.ConnectionError:
+            logger.error('<--- Response  auth failed url: %s  token: %s connection failed', exc_info=True)
             raise exceptions.AuthenticationFailed('Invalid token header. ConnectionError.')
 
         if r.status_code == 200:
