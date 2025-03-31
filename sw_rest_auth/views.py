@@ -10,7 +10,7 @@ from . import serializers
 
 
 AuthUser = get_user_model()
-logger = logging.getLogger('sw.rest.auth')
+logger = logging.getLogger(__name__)
 
 
 @api_view(['POST'])

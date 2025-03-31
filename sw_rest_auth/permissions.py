@@ -7,7 +7,7 @@ import requests
 from rest_framework.exceptions import PermissionDenied
 
 
-logger = logging.getLogger('sw.rest.auth')
+logger = logging.getLogger(__name__)
 
 
 class CodePermission(permissions.BasePermission):
