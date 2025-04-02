@@ -7,7 +7,7 @@ from django.conf import settings
 
 from .permissions import CodePermission
 
-logger = logging.getLogger('sw.rest.auth')
+logger = logging.getLogger(__name__)
 
 
 class RestBackend(object):

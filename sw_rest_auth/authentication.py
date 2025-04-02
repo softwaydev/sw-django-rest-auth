@@ -7,7 +7,7 @@ from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 import requests
 
-logger = logging.getLogger('sw.rest.auth')
+logger = logging.getLogger(__name__)
 
 
 class TokenServiceAuthentication(BaseAuthentication):
@@ -70,7 +70,9 @@ class TokenServiceAuthentication(BaseAuthentication):
             result = r.json()
             token_err_description = ', '.join(result['token'])
             logger.error('<--- Response  auth failed url: %s  token: %s error: %s',
-                         settings.AUTH_SERVICE_CHECK_TOKEN_URL, token_key, result, exc_info=True)
+                         settings.AUTH_SERVICE_CHECK_TOKEN_URL, token_key, result,
+                         exc_info=True, extra={'skip_request_id': True}
+                         )
             raise exceptions.AuthenticationFailed('Invalid token header. %s' % token_err_description)
 
         else:
