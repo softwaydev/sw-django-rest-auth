@@ -69,10 +69,9 @@ class TokenServiceAuthentication(BaseAuthentication):
         elif r.status_code == 400:
             result = r.json()
             token_err_description = ', '.join(result['token'])
-            logger.error('<--- Response  auth failed url: %s  token: %s error: %s',
-                         settings.AUTH_SERVICE_CHECK_TOKEN_URL, token_key, result,
-                         exc_info=True, extra={'skip_request_id': True}
-                         )
+            # TODO временно перевели на warning, чтобы не тригерить сентри. Иначе он вызывает рекурсию этого логгера
+            logger.warning('<--- Response  auth failed url: %s  token: %s error: %s',
+                         settings.AUTH_SERVICE_CHECK_TOKEN_URL, token_key, result, exc_info=True)
             raise exceptions.AuthenticationFailed('Invalid token header. %s' % token_err_description)
 
         else:
